@@ -1,0 +1,9 @@
+parts/
+rally/
+tmp_*
+tmp/
+credentials.json
+.private*
+.terraform*
+*.tfstate*
+__pycache__/
