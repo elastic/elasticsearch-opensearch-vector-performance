@@ -1,0 +1,244 @@
+{
+  "name": "knn-search-10-50-acceptedAnswerId",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 50,
+  "filter": {
+    "exists": {
+      "field": "acceptedAnswerId"
+    }
+  }
+},
+{
+  "name": "knn-search-10-50-java",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 50,
+  "filter": {
+    "terms": {
+       "tags": ["java"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-50-css",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 50,
+  "filter": {
+    "terms": {
+       "tags": ["css"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-50-concurrency",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 50,
+  "filter": {
+    "terms": {
+       "tags": ["concurrency"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-50-match-all",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 50
+},
+{
+  "name": "script-score-query-css",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "terms": {
+       "tags": ["css"]
+    }
+  }
+},
+{
+  "name": "script-score-query-javascript",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "terms": {
+       "tags": ["javascript"]
+    }
+  }
+},
+{
+  "name": "script-score-query-concurrency",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "terms": {
+       "tags": ["concurrency"]
+    }
+  }
+},
+{
+  "name": "script-score-query-ccs",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "terms": {
+       "tags": ["ccs"]
+    }
+  }
+},
+{
+  "name": "script-score-query-acceptedAnswerId",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "exists": {
+      "field": "acceptedAnswerId"
+   }
+  } 
+},
+{
+  "name": "script-score-query-java",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10,
+  "filter": {
+    "terms": {
+      "tags": ["java"]
+   }
+  } 
+},
+{
+  "name": "script-score-query-match-all",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "exact": true,
+  "k": 10
+},
+{
+  "name": "knn-search-10-100-acceptedAnswerId",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 100,
+  "filter": {
+    "exists": {
+      "field": "acceptedAnswerId"
+    }
+  }
+},
+{
+  "name": "knn-search-10-100-java",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 100,
+  "filter": {
+    "terms": {
+       "tags": ["java"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-100-css",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 100,
+  "filter": {
+    "terms": {
+       "tags": ["css"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-100-concurrency",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 100,
+  "filter": {
+    "terms": {
+       "tags": ["concurrency"]
+    }
+  }
+},
+{
+  "name": "knn-search-10-100-match-all",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 10,
+  "num-candidates": 100
+},
+{
+  "name": "knn-search-100-1000-acceptedAnswerId",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 100,
+  "num-candidates": 1000,
+  "filter": {
+    "exists": {
+      "field": "acceptedAnswerId"
+    }
+  }
+},
+{
+  "name": "knn-search-100-1000-java",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 100,
+  "num-candidates": 1000,
+  "filter": {
+    "terms": {
+       "tags": ["java"]
+    }
+  }
+},
+{
+  "name": "knn-search-100-1000-css",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 100,
+  "num-candidates": 1000,
+  "filter": {
+    "terms": {
+       "tags": ["css"]
+    }
+  }
+},
+{
+  "name": "knn-search-100-1000-concurrency",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 100,
+  "num-candidates": 1000,
+  "filter": {
+    "terms": {
+       "tags": ["concurrency"]
+    }
+  }
+},
+{
+  "name": "knn-search-100-1000-match-all",
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": 100,
+  "num-candidates": 1000
+}

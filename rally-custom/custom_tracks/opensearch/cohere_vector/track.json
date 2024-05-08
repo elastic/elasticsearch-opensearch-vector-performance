@@ -1,0 +1,98 @@
+{% import "rally.helpers" as rally with context %}
+
+{
+  "version": 2,
+  "description": "Benchmark for vector search with Cohere Wikipedia data",
+  "indices": [
+    {
+      "name": "cohere",
+      "body": "index-{{ mapping_type | default("vectors-only") }}-mapping.json"
+    }
+  ],
+  "corpora": [
+    {
+      "name": "cohere-initial-indexing",
+      "base-url": "https://rally-tracks.elastic.co/cohere-miracl-en-corpus-22-12",
+      "documents": [
+        {
+          "source-file": "cohere-documents-01.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18312995312,
+          "uncompressed-bytes": 49662890717
+        },
+        {
+          "source-file": "cohere-documents-02.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18304049282,
+          "uncompressed-bytes": 49679555741
+        },
+        {
+          "source-file": "cohere-documents-03.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18350847496,
+          "uncompressed-bytes": 49760673222
+        },
+        {
+          "source-file": "cohere-documents-04.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18319454970,
+          "uncompressed-bytes": 49679270166
+        },
+        {
+          "source-file": "cohere-documents-05.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18284073799,
+          "uncompressed-bytes": 49631094352
+        },
+        {
+          "source-file": "cohere-documents-06.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18308139799,
+          "uncompressed-bytes": 49646696252
+        },
+        {
+          "source-file": "cohere-documents-07.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18308506643,
+          "uncompressed-bytes": 49667974677
+        },
+        {
+          "source-file": "cohere-documents-08.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18315698147,
+          "uncompressed-bytes": 49668250315
+        },
+        {
+          "source-file": "cohere-documents-09.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18287464452,
+          "uncompressed-bytes": 49633701784
+        },
+        {
+          "source-file": "cohere-documents-10.json.bz2",
+          "document-count": 3000000,
+          "compressed-bytes": 18233065052,
+          "uncompressed-bytes": 49566656816
+        }
+      ]
+    },
+    {
+      "name": "cohere-parallel-indexing",
+      "base-url": "https://rally-tracks.elastic.co/cohere-miracl-en-corpus-22-12",
+      "documents": [
+        {
+          "source-file": "cohere-documents-11.json.bz2",
+          "document-count": 2893221,
+          "compressed-bytes": 17613342135,
+          "uncompressed-bytes": 47828821868
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {{ rally.collect(parts="operations/*.json") }}
+  ],
+  "challenges": [
+    {{ rally.collect(parts="challenges/*.json") }}
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "settings": {
+    {% if preload_pagecache %}
+    "index.store.preload": [ "vec", "vex", "vem"],
+    {% endif %}
+    "index.number_of_shards": {{number_of_shards | default(1)}},
+    "index.number_of_replicas": {{number_of_replicas | default(0)}},
+    "index.requests.cache.enable": false,
+    "index.queries.cache.enabled": false,
+    "knn": true
+  },
+  "mappings": {
+    "properties": {
+      "docid": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text"
+      },
+      "text": {
+        "type": "text"
+      },
+      "emb": {
+        "type": "knn_vector",
+        "dimension": 768,
+        "index": true,
+        "method": {
+          "name": {{ vector_index_type | default("hnsw") |tojson }},
+          "engine": {{ vector_engine_type | default("nmslib") |tojson }},
+          "space_type": {{ vector_space | default("cosinesimil") |tojson }},
+          "parameters": {
+            {% if sq_fp16 %}
+            "encoder": {
+              "name": "sq",
+              "parameters": {
+                "type": "fp16"
+              }
+            },
+            {% endif %}
+            "m": 16,
+            "ef_construction": 100
+          }
+        }
+      }
+    }
+  }
+}
