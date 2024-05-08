@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rally-os-openai-vector
+spec:
+  completions: 10
+  template:
+    metadata:
+      name: rally-os-openai-vector
+      labels: 
+        app: rally-opensearch
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        cloud.google.com/gke-nodepool: rally-nodes
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - rally-elasticsearch
+            topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: "kubernetes.io/arch"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - name: rally
+          image: docker.elastic.co/employees/ugosan/rally-custom:115
+          imagePullPolicy: Always
+          env:
+            - name: HOSTPORT
+              value: "os-cluster.default.svc.cluster.local:9200"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: password
+            - name: META
+              value: "product:OpenSearch,product-version:OpenSearch-2.13.0,benchmark-run:vector-test"
+          args:
+            [
+              "race",
+              "--track-path=/rally/custom_tracks/opensearch/openai_vector",
+              "--target-hosts=$(HOSTPORT)",
+              "--pipeline=benchmark-only",
+              "--user-tags=$(META)",
+              "--on-error=abort",
+              "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
+              "--challenge=index-and-search",
+              "--track-params=number_of_shards:1,vector_engine_type:faiss,sq_fp16:true,vector_space:innerproduct"
+            ]
+          volumeMounts:
+            - name: rally-config-volume
+              mountPath: "/rally/.rally/rally.ini"
+              subPath: "rally.ini"
+            - name: rally-base-dir
+              mountPath: "/rally/.rally"
+            - name: rally-tracks-data-os
+              mountPath: "/rally-tracks-cache"
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+        - name: rally-config-volume
+          configMap:
+            name: rally-config
+            items:
+              - key: rally.ini
+                path: rally.ini
+        - name: rally-base-dir
+          emptyDir: {}
+        - name: rally-tracks-data-os
+          persistentVolumeClaim:
+            claimName: rally-tracks-data-os
+      initContainers:
+        - name: permission-fix
+          image: busybox
+          command: ["sh", "-c"]
+          args: ["chmod -R 777 /rally/.rally /rally-tracks-cache"]
+          volumeMounts:
+            - mountPath: /rally/.rally
+              name: rally-base-dir
+            - mountPath: /rally-tracks-cache
+              name: rally-tracks-data-os
