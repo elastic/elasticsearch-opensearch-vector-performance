@@ -66,6 +66,11 @@ spec:
               mountPath: "/rally/.rally"
             - name: rally-tracks-data-os
               mountPath: "/rally-tracks-cache"
+          resources:
+            requests:
+              cpu: "2.1"
+            limits:
+              cpu: "4"
       imagePullSecrets:
       - name: regcred
       volumes:
@@ -90,3 +95,24 @@ spec:
               name: rally-base-dir
             - mountPath: /rally-tracks-cache
               name: rally-tracks-data-os
+        - name: cleanup-indices
+          image: curlimages/curl:8.7.1
+          env:
+            - name: HOSTPORT
+              value: "os-cluster.default.svc.cluster.local:9200"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: password
+          command: ["sh", "-c"]
+          args:
+            - |
+              curl -k -vv -XDELETE "https://$(USERNAME):$(PASSWORD)@$(HOSTPORT)/vectors" &&
+              curl -k -vv -XDELETE "https://$(USERNAME):$(PASSWORD)@$(HOSTPORT)/openai" &&
+              curl -k -vv -XDELETE "https://$(USERNAME):$(PASSWORD)@$(HOSTPORT)/cohere" 
