@@ -25,7 +25,7 @@
   "param-source": "knn-recall-param-source",
   "k": 10,
   "num-candidates": 100,
-  "include-in-reporting": false
+  "include-in-reporting": true
 },
 {
   "name": "knn-recall-100-1000",
@@ -33,29 +33,5 @@
   "param-source": "knn-recall-param-source",
   "k": 100,
   "num-candidates": 1000,
-  "include-in-reporting": false
-},
-{
-  "name": "knn-recall-10-10",
-  "operation-type": "knn-recall",
-  "param-source": "knn-recall-param-source",
-  "k": 10,
-  "num-candidates": 10,
-  "include-in-reporting": false
-},
-{
-  "name": "knn-recall-100-100",
-  "operation-type": "knn-recall",
-  "param-source": "knn-recall-param-source",
-  "k": 100,
-  "num-candidates": 100,
-  "include-in-reporting": false
-},
-{
-  "name": "knn-recall-1000-1000",
-  "operation-type": "knn-recall",
-  "param-source": "knn-recall-param-source",
-  "k": 1000,
-  "num-candidates": 1000,
-  "include-in-reporting": false
+  "include-in-reporting": true
 }

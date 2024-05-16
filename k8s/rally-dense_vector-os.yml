@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:116
+          image: docker.elastic.co/employees/ugosan/rally-custom:121
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -45,7 +45,7 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.13.0,benchmark-run:vector-test"
+              value: "product:OpenSearch,product-version:OpenSearch-2.13.0,benchmark-run:vector-may20"
           args:
             [
               "race",
