@@ -1,4 +1,4 @@
-TAG := ugosan/rally-custom:115
+TAG := ${image}
 ARM_TAG := $(TAG)-manifest-arm64v8
 AMD_TAG := $(TAG)-manifest-amd64
 
