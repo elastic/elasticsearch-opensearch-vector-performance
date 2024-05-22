@@ -79,6 +79,30 @@
       "iterations": {{ standalone_search_iterations | default(10000) | int }}
     },
     {
+      "name": "knn-recall-10-100",
+      "operation": {
+          "name": "knn-recall-10-100",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 10,
+          "num-candidates": 100,
+          "include-in-reporting": true,
+          "invalidate-vector-store": true
+      }
+    },
+    {
+      "name": "knn-recall-100-1000",
+      "operation": {
+          "name": "knn-recall-100-1000",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 100,
+          "num-candidates": 1000,
+          "include-in-reporting": true,
+          "invalidate-vector-store": false
+      }
+    },
+    {
       "parallel": {
         "tasks": [
           {
