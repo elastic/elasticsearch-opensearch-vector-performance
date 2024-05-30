@@ -3,14 +3,14 @@ kind: Elasticsearch
 metadata:
   name: es-cluster
 spec:
-  version: 8.13.0
+  version: 8.13.4
   http:
     service:
       spec:
         type: ClusterIP
   nodeSets:
   - name: default
-    count: 6
+    count: 3
     podTemplate:
       spec:
         nodeSelector:
@@ -43,7 +43,7 @@ kind: Kibana
 metadata:
   name: es-cluster
 spec:
-  version: 8.13.0
+  version: 8.13.4
   http:
     service:
       spec:

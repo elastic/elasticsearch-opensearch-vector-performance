@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:115
+          image: docker.elastic.co/employees/ugosan/rally-custom:128
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -45,7 +45,7 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.13.0,benchmark-run:vector-test"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-may20"
           args:
             [
               "race",
@@ -55,8 +55,8 @@ spec:
               "--user-tags=$(META)",
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
-              "--challenge=index-and-search",
-              "--track-params=number_of_shards:1,vector_engine_type:faiss,sq_fp16:true,vector_space:innerproduct"
+              "--challenge=recall",
+              "--track-params=number_of_shards:3,vector_engine_type:lucene,vector_space:innerproduct,initial_indexing_ingest_percentage:100"
             ]
           volumeMounts:
             - name: rally-config-volume
@@ -64,6 +64,8 @@ spec:
               subPath: "rally.ini"
             - name: rally-base-dir
               mountPath: "/rally/.rally"
+            - name: rally-logs
+              mountPath: "/rally/.rally/logs"
             - name: rally-tracks-data-os
               mountPath: "/rally-tracks-cache"
           resources:
@@ -82,6 +84,10 @@ spec:
                 path: rally.ini
         - name: rally-base-dir
           emptyDir: {}
+        - name: rally-logs
+          hostPath:
+            path: /var/log/rally-logs
+            type: DirectoryOrCreate
         - name: rally-tracks-data-os
           persistentVolumeClaim:
             claimName: rally-tracks-data-os
@@ -89,10 +95,12 @@ spec:
         - name: permission-fix
           image: busybox
           command: ["sh", "-c"]
-          args: ["chmod -R 777 /rally/.rally /rally-tracks-cache"]
+          args: ["chmod -R 777 /rally/.rally /rally-tracks-cache /var/log/rally-logs"]
           volumeMounts:
             - mountPath: /rally/.rally
               name: rally-base-dir
+            - mountPath: /var/log/rally-logs
+              name: rally-logs
             - mountPath: /rally-tracks-cache
               name: rally-tracks-data-os
         - name: cleanup-indices

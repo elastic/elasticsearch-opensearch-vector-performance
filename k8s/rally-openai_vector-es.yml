@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:115
+          image: docker.elastic.co/employees/ugosan/rally-custom:128
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -42,7 +42,7 @@ spec:
                   name: es-cluster-es-elastic-user
                   key: elastic
             - name: META
-              value: "product:Elasticsearch,product-version:Elasticsearch-8.13.0,benchmark-run:vector-1"
+              value: "product:Elasticsearch,product-version:Elasticsearch-8.13.4,benchmark-run:vector-may20"
           args:
             [
               "race",
@@ -53,7 +53,7 @@ spec:
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
               "--challenge=index-and-search",
-              "--track-params=vector_index_type:hnsw,number_of_shards:3"
+              "--track-params=vector_index_type:int8_hnsw,number_of_shards:1,initial_indexing_ingest_percentage:100"
             ]
           volumeMounts:
             - name: rally-config-volume

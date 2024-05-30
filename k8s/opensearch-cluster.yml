@@ -17,14 +17,14 @@ spec:
     httpPort: 9200
     serviceName: os-cluster
     setVMMaxMapCount: true
-    version: 2.13.0
+    version: 2.14.0
     pluginsList: []
     drainDataNodes: true
   dashboards:
     tls:
       enable: true
       generate: true
-    version: 2.13.0
+    version: 2.14.0
     enable: true
     replicas: 1
     nodeSelector:
@@ -38,7 +38,7 @@ spec:
         cpu: "200m"
   nodePools:
     - component: data
-      replicas: 6
+      replicas: 3
       nodeSelector:
         cloud.google.com/gke-nodepool: opensearch-nodepool-32
       diskSize: "300Gi"

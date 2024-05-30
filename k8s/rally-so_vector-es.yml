@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: rally-es-so-vector
 spec:
-  completions: 10
+  completions: 5
   template:
     metadata:
       name: rally-es-so-vector
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:115
+          image: docker.elastic.co/employees/ugosan/rally-custom:137
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -42,7 +42,7 @@ spec:
                   name: es-cluster-es-elastic-user
                   key: elastic
             - name: META
-              value: "product:Elasticsearch,product-version:Elasticsearch-8.13.0,benchmark-run:vector-1"
+              value: "product:Elasticsearch,product-version:Elasticsearch-8.13.4,benchmark-run:vector-may27"
           args:
             [
               "race",
@@ -52,8 +52,8 @@ spec:
               "--user-tags=$(META)",
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
-              "--challenge=index-and-search",
-              "--track-params=bulk_indexing_clients:1,bulk_size:200,number_of_shards:1,vector_index_type:hnsw"
+              "--challenge=recall",
+              "--track-params=bulk_indexing_clients:1,bulk_size:200,number_of_shards:1,vector_index_type:int8_hnsw"
             ]
           volumeMounts:
             - name: rally-config-volume
