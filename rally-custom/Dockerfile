@@ -1,4 +1,4 @@
-FROM elastic/rally:2.10.0
+FROM elastic/rally:2.11.0
 ENV PYTHONUNBUFFERED=1
 
 # copy all our custom tracks to /rally/custom_tracks
