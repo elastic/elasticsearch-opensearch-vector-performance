@@ -1,0 +1,81 @@
+{
+  "name": "recall",
+  "description": "Indexes vectors, then calculates recall",
+  "default": false,
+  "schedule": [
+    {
+      "operation": {
+        "operation-type": "delete-index"
+      }
+    },
+    {
+      "operation": {
+        "operation-type": "create-index"
+      }
+    },
+    {
+      "operation": {
+        "operation-type": "cluster-health",
+        "request-params": {
+          "wait_for_status": "green"
+        },
+        "retry-until-success": true
+      }
+    },
+    {
+      "name": "index-append",
+      "operation": {
+        "operation-type": "bulk",
+        "bulk-size": {{bulk_size | default(500)}},
+        "ingest-percentage": {{ingest_percentage | default(100)}}
+      },
+      "warmup-time-period": {{ bulk_warmup | default(40) | int }},
+      "clients": {{bulk_indexing_clients | default(1)}}
+    },
+    {
+      "name": "refresh-after-index",
+      "operation": {
+        "operation-type": "refresh",
+        "request-timeout": 60000,
+        "include-in-reporting": true
+      }
+    },
+    {
+      "name": "knn-recall-10-50",
+      "operation": {
+          "name": "knn-recall-10-50",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 10,
+          "num-candidates": 50,
+          "include-in-reporting": true,
+          "invalidate-vector-store": true
+      }
+    },
+    {
+      "name": "knn-recall-10-100",
+      "operation": {
+          "name": "knn-recall-10-100",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 10,
+          "num-candidates": 100,
+          "include-in-reporting": true,
+          "invalidate-vector-store": true
+      }
+    },
+    {
+      "name": "knn-recall-100-1000",
+      "operation": {
+          "name": "knn-recall-100-1000",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 100,
+          "num-candidates": 1000,
+          "include-in-reporting": true,
+          "invalidate-vector-store": false
+      }
+    }
+  ]
+}
+
