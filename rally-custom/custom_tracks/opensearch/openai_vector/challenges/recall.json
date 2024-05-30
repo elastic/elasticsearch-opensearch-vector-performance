@@ -1,0 +1,96 @@
+{
+  "name": "recall",
+  "description": "",
+  "schedule": [
+    {
+      "operation": {
+        "operation-type": "delete-index"
+      }
+    },
+    {
+      "name": "create-index",
+      "operation": "create-index"
+    },
+    {
+      "name": "check-cluster-health",
+      "operation": "check-cluster-health"
+    },
+    {
+      "name": "initial-documents-indexing",
+      "operation": "initial-documents-indexing",
+      "warmup-time-period": {{ initial_indexing_bulk_warmup | default(40) | int }},
+      "clients": {{ initial_indexing_bulk_indexing_clients | default(5) | int }}
+    },
+    {
+      "name": "refresh-after-index",
+      "operation": {
+        "operation-type": "refresh",
+        "request-timeout": 1000,
+        "include-in-reporting": true
+      }
+    },
+    {
+      "name": "wait-until-merges-finish-after-index",
+      "operation": {
+        "operation-type": "index-stats",
+        "index": "_all",
+        "condition": {
+          "path": "_all.total.merges.current",
+          "expected-value": 0
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+      }
+    },
+    {
+      "name": "put-knn-candidate-settings-1",
+      "operation": {
+        "operation-type": "raw-request",
+        "path": "/openai/_settings",
+        "method": "PUT",
+        "body": {
+          "index.knn.algo_param.ef_search": 100
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+     }
+    },
+    {
+      "name": "knn-recall-10-100",
+      "operation": {
+          "name": "knn-recall-10-100",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 10,
+          "num-candidates": 100,
+          "include-in-reporting": true,
+          "invalidate-vector-store": true
+      }
+    },
+    {
+      "name": "put-knn-candidate-settings-2",
+      "operation": {
+        "operation-type": "raw-request",
+        "path": "/openai/_settings",
+        "method": "PUT",
+        "body": {
+          "index.knn.algo_param.ef_search": 1000
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+     }
+    },
+    {
+      "name": "knn-recall-100-1000",
+      "operation": {
+          "name": "knn-recall-100-1000",
+          "operation-type": "knn-recall",
+          "param-source": "knn-recall-param-source",
+          "k": 100,
+          "num-candidates": 1000,
+          "include-in-reporting": true,
+          "invalidate-vector-store": false
+      }
+    }
+  ]
+}
