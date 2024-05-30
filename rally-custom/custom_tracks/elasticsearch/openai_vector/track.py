@@ -69,8 +69,6 @@ async def extract_exact_neighbors(
 
 class KnnParamSource:
     def __init__(self, track, params, **kwargs):
-        # choose a suitable index: if there is only one defined for this track
-        # choose that one, but let the user always override index
         if len(track.indices) == 1:
             default_index = track.indices[0].name
         else:
