@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: rally-os-dense-vector
 spec:
-  completions: 10
+  completions: 5
   template:
     metadata:
       name: rally-os-dense-vector
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:121
+          image: docker.elastic.co/employees/ugosan/rally-custom:138
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -45,7 +45,7 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.13.0,benchmark-run:vector-may20"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-jun7"
           args:
             [
               "race",

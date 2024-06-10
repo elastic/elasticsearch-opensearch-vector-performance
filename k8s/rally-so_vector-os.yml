@@ -45,7 +45,7 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-may27"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-jun7"
           args:
             [
               "race",
@@ -56,7 +56,7 @@ spec:
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
               "--challenge=recall",
-              "--track-params=number_of_shards:1,vector_engine_type:faiss,sq_fp16:true,vector_space:innerproduct"
+              "--track-params=number_of_shards:1,vector_engine_type:lucene,vector_space:innerproduct"
             ]
           volumeMounts:
             - name: rally-config-volume

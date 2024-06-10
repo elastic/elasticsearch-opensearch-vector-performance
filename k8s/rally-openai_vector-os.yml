@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: rally-os-openai-vector
 spec:
-  completions: 10
+  completions: 5
   template:
     metadata:
       name: rally-os-openai-vector
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:128
+          image: docker.elastic.co/employees/ugosan/rally-custom:138
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -45,7 +45,7 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-may20"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-jun7"
           args:
             [
               "race",
@@ -56,7 +56,7 @@ spec:
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
               "--challenge=recall",
-              "--track-params=number_of_shards:3,vector_engine_type:lucene,vector_space:innerproduct,initial_indexing_ingest_percentage:100"
+              "--track-params=number_of_shards:1,vector_engine_type:lucene,vector_space:innerproduct,initial_indexing_ingest_percentage:100"
             ]
           volumeMounts:
             - name: rally-config-volume
