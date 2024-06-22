@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: rally-es-openai-vector
+  name: rally-es-openai-vector-recall
 spec:
   completions: 3
   template:
     metadata:
-      name: rally-es-openai-vector
+      name: rally-es-openai-vector-recall
       labels: 
         app: rally-elasticsearch
     spec:
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:142
+          image: docker.elastic.co/employees/ugosan/rally-custom:144
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -42,7 +42,7 @@ spec:
                   name: es-cluster-es-elastic-user
                   key: elastic
             - name: META
-              value: "product:Elasticsearch,product-version:Elasticsearch-8.14.0,benchmark-run:es-openai-vector"
+              value: "product:Elasticsearch,product-version:Elasticsearch-8.14.0,benchmark-run:es-openai-vector-recall"
           args:
             [
               "race",
@@ -52,7 +52,7 @@ spec:
               "--user-tags=$(META)",
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
-              "--challenge=index-and-search",
+              "--challenge=recall",
               "--track-params=number_of_shards:1,vector_index_type:hnsw"
             ]
           volumeMounts:

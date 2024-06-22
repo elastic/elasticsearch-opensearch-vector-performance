@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: rally-es-so-vector
 spec:
-  completions: 10
+  completions: 4
   template:
     metadata:
       name: rally-es-so-vector
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:138
+          image: docker.elastic.co/employees/ugosan/rally-custom:143
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -42,7 +42,7 @@ spec:
                   name: es-cluster-es-elastic-user
                   key: elastic
             - name: META
-              value: "product:Elasticsearch,product-version:Elasticsearch-8.14.0,benchmark-run:vector-jun7"
+              value: "product:Elasticsearch,product-version:Elasticsearch-8.14.0,benchmark-run:es-so-vector"
           args:
             [
               "race",
@@ -53,7 +53,7 @@ spec:
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
               "--challenge=index-and-search-multiple-clients",
-              "--track-params=bulk_indexing_clients:1,bulk_size:200,number_of_shards:1,vector_index_type:int8_hnsw"
+              "--track-params=bulk_indexing_clients:1,bulk_size:300,number_of_shards:1,vector_index_type:hnsw"
             ]
           volumeMounts:
             - name: rally-config-volume
@@ -63,11 +63,7 @@ spec:
               mountPath: "/rally/.rally"
             - name: rally-tracks-data-es
               mountPath: "/rally-tracks-cache"
-          resources:
-            requests:
-              cpu: "2.1"
-            limits:
-              cpu: "4"
+
       imagePullSecrets:
       - name: regcred
       volumes:

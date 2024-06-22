@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: rally-os-so-vector
+  name: rally-os-dense-vector-nmslib-ootb
 spec:
-  completions: 5
+  completions: 1
   template:
     metadata:
-      name: rally-os-so-vector
+      name: rally-os-dense-vector-nmslib-ootb
       labels: 
         app: rally-opensearch
     spec:
@@ -29,7 +29,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:138
+          image: docker.elastic.co/employees/ugosan/rally-custom:144
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
@@ -45,18 +45,18 @@ spec:
                   name: os-cluster-admin-password
                   key: password
             - name: META
-              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:vector-jun7"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:os-ootb-dense-vector-1"
           args:
             [
               "race",
-              "--track-path=/rally/custom_tracks/opensearch/so_vector",
+              "--track-path=/rally/custom_tracks/opensearch/dense_vector",
               "--target-hosts=$(HOSTPORT)",
               "--pipeline=benchmark-only",
               "--user-tags=$(META)",
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
-              "--challenge=recall",
-              "--track-params=number_of_shards:1,vector_engine_type:lucene,vector_space:innerproduct"
+              "--challenge=index-and-search",
+              "--track-params=bulk_size:100,number_of_shards:1,vector_space:innerproduct,concurrent_segment_search:false,vector_engine_type:nmslib"
             ]
           volumeMounts:
             - name: rally-config-volume

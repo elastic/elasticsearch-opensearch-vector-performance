@@ -1,14 +1,14 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: rally-es-openai-vector
+  name: rally-os-so-vector-faissfp16-ootb
 spec:
-  completions: 3
+  completions: 1
   template:
     metadata:
-      name: rally-es-openai-vector
+      name: rally-os-so-vector-faissfp16-ootb
       labels: 
-        app: rally-elasticsearch
+        app: rally-opensearch
     spec:
       restartPolicy: Never
       nodeSelector:
@@ -21,7 +21,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - rally-opensearch
+                - rally-elasticsearch
             topologyKey: kubernetes.io/hostname
       tolerations:
         - key: "kubernetes.io/arch"
@@ -29,31 +29,34 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: rally
-          image: docker.elastic.co/employees/ugosan/rally-custom:142
+          image: docker.elastic.co/employees/ugosan/rally-custom:143
           imagePullPolicy: Always
           env:
             - name: HOSTPORT
-              value: "es-cluster-es-http:9200"
+              value: "os-cluster.default.svc.cluster.local:9200"
             - name: USERNAME
-              value: "elastic"
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: username
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: es-cluster-es-elastic-user
-                  key: elastic
+                  name: os-cluster-admin-password
+                  key: password
             - name: META
-              value: "product:Elasticsearch,product-version:Elasticsearch-8.14.0,benchmark-run:es-openai-vector"
+              value: "product:OpenSearch,product-version:OpenSearch-2.14.0,benchmark-run:os-ootb-so-vector-1"
           args:
             [
               "race",
-              "--track-path=/rally/custom_tracks/elasticsearch/openai_vector",
+              "--track-path=/rally/custom_tracks/opensearch/so_vector",
               "--target-hosts=$(HOSTPORT)",
               "--pipeline=benchmark-only",
               "--user-tags=$(META)",
               "--on-error=abort",
               "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
-              "--challenge=index-and-search",
-              "--track-params=number_of_shards:1,vector_index_type:hnsw"
+              "--challenge=index-and-search-multiple-clients",
+              "--track-params=number_of_shards:1,vector_space:innerproduct,concurrent_segment_search:false,vector_engine_type:faiss,sq_fp16:true"
             ]
           volumeMounts:
             - name: rally-config-volume
@@ -61,7 +64,7 @@ spec:
               subPath: "rally.ini"
             - name: rally-base-dir
               mountPath: "/rally/.rally"
-            - name: rally-tracks-data-es
+            - name: rally-tracks-data-os
               mountPath: "/rally-tracks-cache"
           resources:
             requests:
@@ -79,9 +82,9 @@ spec:
                 path: rally.ini
         - name: rally-base-dir
           emptyDir: {}
-        - name: rally-tracks-data-es
+        - name: rally-tracks-data-os
           persistentVolumeClaim:
-            claimName: rally-tracks-data-es
+            claimName: rally-tracks-data-os
       initContainers:
         - name: permission-fix
           image: busybox
@@ -91,19 +94,22 @@ spec:
             - mountPath: /rally/.rally
               name: rally-base-dir
             - mountPath: /rally-tracks-cache
-              name: rally-tracks-data-es
+              name: rally-tracks-data-os
         - name: cleanup-indices
           image: curlimages/curl:8.7.1
           env:
             - name: HOSTPORT
-              value: "es-cluster-es-http:9200"
+              value: "os-cluster.default.svc.cluster.local:9200"
             - name: USERNAME
-              value: "elastic"
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: username
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: es-cluster-es-elastic-user
-                  key: elastic
+                  name: os-cluster-admin-password
+                  key: password
           command: ["sh", "-c"]
           args:
             - |
