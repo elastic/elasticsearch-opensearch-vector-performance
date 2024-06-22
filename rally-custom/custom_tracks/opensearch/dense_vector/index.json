@@ -7,7 +7,8 @@
     "index.number_of_replicas": {{number_of_replicas | default(0)}},
     "index.requests.cache.enable": false,
     "index.queries.cache.enabled": false,
-    "knn": true
+    "knn": true,
+    "index.search.concurrent_segment_search.enabled": {{concurrent_segment_search | default(true) | tojson }}
   },
   "mappings": {
     "dynamic": "strict",

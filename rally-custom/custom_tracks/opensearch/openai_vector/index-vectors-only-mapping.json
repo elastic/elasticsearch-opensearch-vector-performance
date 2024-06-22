@@ -8,7 +8,8 @@
     "knn": true,
     "knn.algo_param.ef_search": 1000,
     "index.requests.cache.enable": false,
-    "index.queries.cache.enabled": false
+    "index.queries.cache.enabled": false,
+    "index.search.concurrent_segment_search.enabled": {{concurrent_segment_search | default(true) | tojson }}
   },
   "mappings": {
     "dynamic": false,

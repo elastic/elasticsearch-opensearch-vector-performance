@@ -79,18 +79,6 @@
       "iterations": {{ standalone_search_iterations | default(10000) | int }}
     },
     {
-      "name": "knn-recall-10-100",
-      "operation": {
-          "name": "knn-recall-10-100",
-          "operation-type": "knn-recall",
-          "param-source": "knn-recall-param-source",
-          "k": 10,
-          "num-candidates": 100,
-          "include-in-reporting": true,
-          "invalidate-vector-store": true
-      }
-    },
-    {
       "name": "put-knn-candidate-settings-1",
       "operation": {
         "operation-type": "raw-request",
@@ -115,18 +103,6 @@
       "warmup-iterations": 100,
       "clients": {{ standalone_search_clients | default(8) | int }},
       "iterations": {{ standalone_search_iterations | default(10000) | int }}
-    },
-    {
-      "name": "knn-recall-100-1000",
-      "operation": {
-          "name": "knn-recall-100-1000",
-          "operation-type": "knn-recall",
-          "param-source": "knn-recall-param-source",
-          "k": 100,
-          "num-candidates": 1000,
-          "include-in-reporting": true,
-          "invalidate-vector-store": false
-      }
     },
     {
       "name": "put-knn-candidate-settings-2",

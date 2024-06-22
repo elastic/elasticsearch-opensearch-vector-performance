@@ -41,6 +41,19 @@
       }
     },
     {
+      "name": "put-knn-candidate-settings-0",
+      "operation": {
+        "operation-type": "raw-request",
+        "path": "/vectors/_settings",
+        "method": "PUT",
+        "body": {
+          "index.knn.algo_param.ef_search": 50
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+     }
+    },
+    {
       "name": "knn-recall-10-50",
       "operation": {
           "name": "knn-recall-10-50",
@@ -53,6 +66,20 @@
       }
     },
     {
+      "name": "put-knn-candidate-settings-1",
+      "operation": {
+        "operation-type": "raw-request",
+        "path": "/vectors/_settings",
+        "method": "PUT",
+        "body": {
+          "index.knn.algo_param.ef_search": 100
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+     }
+    },
+
+    {
       "name": "knn-recall-10-100",
       "operation": {
           "name": "knn-recall-10-100",
@@ -63,6 +90,19 @@
           "include-in-reporting": true,
           "invalidate-vector-store": true
       }
+    },
+    {
+      "name": "put-knn-candidate-settings-2",
+      "operation": {
+        "operation-type": "raw-request",
+        "path": "/vectors/_settings",
+        "method": "PUT",
+        "body": {
+          "index.knn.algo_param.ef_search": 1000
+        },
+        "retry-until-success": true,
+        "include-in-reporting": false
+     }
     },
     {
       "name": "knn-recall-100-1000",
