@@ -16,7 +16,7 @@ resource "google_container_cluster" "my_cluster" {
 resource "google_container_node_pool" "elasticsearch_nodes_32cpu" {
   name       = "elasticsearch-nodepool-32"
   cluster    = google_container_cluster.my_cluster.id
-  node_count = 4
+  node_count = 3
 
   node_config {
     machine_type = "e2-standard-32"
@@ -39,7 +39,7 @@ resource "google_container_node_pool" "kibana_nodes_2cpu" {
 resource "google_container_node_pool" "opensearch_nodes_32cpu" {
   name       = "opensearch-nodepool-32"
   cluster    = google_container_cluster.my_cluster.id
-  node_count = 4
+  node_count = 3
 
   node_config {
     machine_type = "e2-standard-32"

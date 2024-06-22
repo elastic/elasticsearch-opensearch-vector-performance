@@ -9,9 +9,9 @@ To ensure fair testing grounds, both search engines were tested under identical 
 
 
 Use [this terraform script](./terraform/main.tf) to provision a Kubernetes cluster with:
-- 1 Node pool for Elasticsearch with 6 `e2-standard-32` machines (128GB RAM and 32 CPUs)
-- 1 Node pool for OpenSearch with 6 `e2-standard-32` machines (128GB RAM and 32 CPUs)
-- 1 Node pool for Rally with 2 `t2a-standard-16` machines (64GB RAM and 16 CPUs)
+- 1 Node pool for Elasticsearch with 3 `e2-standard-32` machines (128GB RAM and 32 CPUs)
+- 1 Node pool for OpenSearch with 3 `e2-standard-32` machines (128GB RAM and 32 CPUs)
+- 1 Node pool for Rally with 2 `e2-standard-4` machines (16GB RAM and 4 CPUs)
 
 
 ## Creating Elasticsearch and Opensearch clusters
@@ -19,8 +19,8 @@ Use [this terraform script](./terraform/main.tf) to provision a Kubernetes clust
 ### Install ECK
 
 ```bash
-kubectl create -f https://download.elastic.co/downloads/eck/2.9.0/crds.yaml
-kubectl apply -f https://download.elastic.co/downloads/eck/2.9.0/operator.yaml
+kubectl create -f https://download.elastic.co/downloads/eck/2.13.0/crds.yaml
+kubectl apply -f https://download.elastic.co/downloads/eck/2.13.0/operator.yaml
 ```
 
 Deploy the Elasticsearch Kubernetes Manifest [here](./k8s/elasticsearch-cluster.yml)
@@ -32,7 +32,7 @@ kubectl apply -f k8s/elasticsearch-cluster.yml
 
 ### Install OpenSearch Kubernetes Operator
 ```bash
-helm repo add opensearch-operator https://opster.github.io/opensearch-k8s-operator/
+helm repo add opensearch-operator https://opensearch-project.github.io/opensearch-k8s-operator/
 helm install opensearch-operator opensearch-operator/opensearch-operator
 ```
 
@@ -84,3 +84,5 @@ Then the run the rally pods:
  kubectl apply -f rally-openai_vector-es.yml rally-openai_vector-os.yml
 ```
 
+
+<img src="screenshots/k9s.webp">
