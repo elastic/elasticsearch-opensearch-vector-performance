@@ -17,14 +17,14 @@ spec:
     httpPort: 9200
     serviceName: os-cluster
     setVMMaxMapCount: true
-    version: 2.14.0
+    version: 2.19.0
     pluginsList: []
     drainDataNodes: true
   dashboards:
     tls:
       enable: true
       generate: true
-    version: 2.14.0
+    version: 2.19.0
     enable: true
     replicas: 1
     nodeSelector:
@@ -67,7 +67,6 @@ spec:
   type: ClusterIP
   selector:
     opster.io/opensearch-nodepool: data
-    #opster.io/os-cluster: os-cluster
   ports:
     - protocol: TCP
       port: 9200

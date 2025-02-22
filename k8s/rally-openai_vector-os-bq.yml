@@ -1,0 +1,145 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rally-params-os
+  labels:
+    app: rally-opensearch
+data:
+  user-tags.json: |
+    {
+      "product": "OpenSearch",
+      "product-version": "OpenSearch-2.19.0",
+      "product-label": "OpenSearch-2.19-faiss",
+      "benchmark-run": "19-feb-recall@100"
+    }
+  track-params.json: |
+    {
+      "mapping_type": "vectors-only-mapping-with-docid",
+      "standalone_search_clients": 8,
+      "standalone_search_iterations": 10000,
+      "ann_threshold": 0,
+      "vector_mode": "on_disk",
+      "compression_level": "32x",
+      "vector_method_name": "hnsw",
+      "vector_method_engine": "faiss",
+      "search_ops": [
+        [100, 200, 200],
+        [100, 250, 250],
+        [100, 300, 300],
+        [100, 500, 500],
+        [100, 750, 750],
+        [100, 1000, 1000],
+        [100, 1200, 1200],
+        [100, 1500, 1500],
+        [100, 2000, 2000]
+      ]
+    }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rally-os-openai-vector-faiss
+spec:
+  completions: 1
+  template:
+    metadata:
+      name: rally-os-openai-vector-faiss
+      labels: 
+        app: rally-opensearch
+    spec:
+      containers:
+        - name: rally
+          image: docker.elastic.co/employees/ugosan/rally-bbq-openai:30
+          imagePullPolicy: Always
+          env:
+            - name: HOSTPORT
+              value: "os-cluster.default.svc.cluster.local:9200"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: os-cluster-admin-password
+                  key: password
+          args:
+            [
+              "race",
+              "--track-path=/rally/custom_tracks/opensearch/openai_vector",
+              "--target-hosts=$(HOSTPORT)",
+              "--pipeline=benchmark-only",
+              "--user-tags=/rally/params/user-tags.json",
+              "--on-error=abort",
+              "--client-options=use_ssl:true,verify_certs:false,basic_auth_user:'$(USERNAME)',basic_auth_password:'$(PASSWORD)'",
+              "--challenge=index-and-search",
+              "--track-params=/rally/params/track-params.json"
+            ]
+          volumeMounts:
+            - name: rally-config-volume
+              mountPath: "/rally/.rally/rally.ini"
+              subPath: "rally.ini"
+            - name: rally-base-dir
+              mountPath: "/rally/.rally"
+            - name: rally-logs
+              mountPath: "/rally/.rally/logs"
+            - name: rally-tracks-data-os
+              mountPath: "/rally-tracks-cache"
+            - name: rally-params-os
+              mountPath: "/rally/params"
+          resources:
+            requests:
+              cpu: "2.1"
+            limits:
+              cpu: "4"
+      restartPolicy: Never
+      nodeSelector:
+        cloud.google.com/gke-nodepool: rally-nodes
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - rally-elasticsearch
+            topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: "kubernetes.io/arch"
+          operator: "Exists"
+          effect: "NoSchedule"
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+        - name: rally-config-volume
+          configMap:
+            name: rally-config
+            items:
+              - key: rally.ini
+                path: rally.ini
+        - name: rally-base-dir
+          emptyDir: {}
+        - name: rally-logs
+          hostPath:
+            path: /var/log/rally-logs
+            type: DirectoryOrCreate
+        - name: rally-tracks-data-os
+          persistentVolumeClaim:
+            claimName: rally-tracks-data-os
+        - name: rally-params-os
+          configMap:
+            name: rally-params-os
+      initContainers:
+        - name: permission-fix
+          image: busybox
+          command: ["sh", "-c"]
+          args: ["chmod -R 777 /rally/.rally /rally-tracks-cache /var/log/rally-logs"]
+          volumeMounts:
+            - mountPath: /rally/.rally
+              name: rally-base-dir
+            - mountPath: /var/log/rally-logs
+              name: rally-logs
+            - mountPath: /rally-tracks-cache
+              name: rally-tracks-data-os
