@@ -1,0 +1,35 @@
+{
+  "settings": {
+    {% if preload_pagecache %}
+    "index.store.preload": [ "vec", "vex", "vem", "veq", "veqm", "veb", "vebm"],
+    {% endif %}
+    "index.number_of_shards": {{number_of_shards | default(1)}},
+    "index.number_of_replicas": {{number_of_replicas | default(0)}},
+    "index.knn": true,
+    "index.knn.advanced.approximate_threshold": {{ann_threshold | default(15000)}}
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "docid": {
+        "type": "keyword"
+      },
+      "emb": {
+        "type": "knn_vector",
+        "dimension": 1536,
+        "space_type": "innerproduct",
+        "data_type": "float",
+        "mode": {{ vector_mode | default("in_memory") | tojson }},
+        "compression_level": {{ compression_level | default("32x") | tojson }},
+        "method": {
+          "name": {{ vector_method_name | default("hnsw") | tojson }},
+          "engine": {{ vector_method_engine | default("faiss") | tojson }},
+          "parameters": {
+            "ef_construction": 100,
+            "m": 16
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "create-index",
+  "operation-type": "create-index",
+  "settings": {{index_settings | default({}) | tojson}}
+},
+{
+  "name": "check-cluster-health",
+  "operation-type": "cluster-health",
+  "request-params": {
+    "wait_for_status": "green"
+  },
+  "retry-until-success": true
+},
+{
+  "name": "initial-documents-indexing",
+  "operation-type": "bulk",
+  "corpora": "openai-initial-indexing",
+  "bulk-size": {{initial_indexing_bulk_size | default(500)}},
+  "ingest-percentage": {{initial_indexing_ingest_percentage | default(100)}}
+},
+{
+  "name": "parallel-documents-indexing",
+  "operation-type": "bulk",
+  "corpora": "openai-parallel-indexing",
+  "bulk-size": {{parallel_indexing_bulk_size | default(500)}},
+  "ingest-percentage": {{parallel_indexing_ingest_percentage | default(100)}}
+}
+{%- set p_search_ops = (search_ops | default([(100, 150, 150), (100, 200, 200), (100, 250, 250), (100, 300, 300), (100,500,500), (100,750,750), (100,1000,1000),(100,1200,1200),(100,1500,1500), (100,2000,2000)]))%}
+{%- for i in range(p_search_ops|length) %},
+{
+  {%- if p_search_ops[i][2] > 0 -%}
+    "name": "knn-search-local-{{p_search_ops[i][0]}}-{{p_search_ops[i][1]}}-{{p_search_ops[i][2]}}"
+  {%- else -%}
+    "name": "knn-search-local-{{p_search_ops[i][0]}}-{{p_search_ops[i][1]}}"
+  {%- endif -%},
+  "operation-type": "search",
+  "param-source": "knn-param-source",
+  "k": {{p_search_ops[i][0]}},
+  "num-candidates": {{p_search_ops[i][1]}},
+  "num-rescore": {{p_search_ops[i][2]}},
+  "global-rescore": false
+},
+{
+  {%- if p_search_ops[i][2] > 0 -%}
+    "name": "knn-recall-local-{{p_search_ops[i][0]}}-{{p_search_ops[i][1]}}-{{p_search_ops[i][2]}}"
+  {%- else -%}
+    "name": "knn-recall-local-{{p_search_ops[i][0]}}-{{p_search_ops[i][1]}}"
+  {%- endif -%},
+  "operation-type": "knn-recall",
+  "param-source": "knn-recall-param-source",
+  "k": {{p_search_ops[i][0]}},
+  "num-candidates": {{p_search_ops[i][1]}},
+  "num-rescore": {{p_search_ops[i][2]}},
+  "global-rescore": false
+}
+{%- endfor %}
